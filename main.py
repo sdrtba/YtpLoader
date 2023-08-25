@@ -22,5 +22,4 @@ def download(url):
 
 if __name__ == '__main__':
     url = input('link: ')
-    #url = 'https://www.youtube.com/watch?v=9f_t9QbjyHc&list=PLMevcTN3zskefoCJ_nZzircZDxNL4UIcv&index=2'
     download(url)
