@@ -1,3 +1,1 @@
-ytpLoader software for downloading songs from YouTube.
-
-I`m just enjoyer
+# YtpLoader is software for downloading songs from YouTube.
