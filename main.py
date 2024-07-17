@@ -8,18 +8,16 @@ def download(url):
         'quiet': True, # without logs
         'progress': True, # show progress bar
         'skip_unavailable_fragments': True,
-
-        #'noplaylist': True,
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.download(url)
-            print(info)
+            ydl.download(url)
     except:
-        print('Oops... Slomalsya')
+        print('Oops...')
 
 
 if __name__ == '__main__':
-    url = input('link: ')
+    #url = input('link: ')
+    url = "https://www.youtube.com/playlist?list=PLcLWzrwuuZhNet5VdtPJBV-K0WDcRSvhJ"
     download(url)
