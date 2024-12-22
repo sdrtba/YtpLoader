@@ -1,25 +1,42 @@
-import yt_dlp
+from yt_dlp import YoutubeDL
 
-def download():
+def download(url, skip, cookies):
+    current_url = None
+
+    def hook(d):
+        nonlocal current_url
+        if d['status'] == 'downloading':
+            current_url = d.get('info_dict', {}).get('webpage_url')
+        if d['status'] == 'finished':
+            song_title = d.get('info_dict', {}).get('title', None)
+            if song_title:
+                with open('songs.txt', 'a', encoding="utf-8") as ds_f:
+                    ds_f.write(song_title + '\n')
+
     ydl_opts = {
-        'outtmpl': '%(title)s.%(ext)s', # output template to name files as <title>.<ext>
-        'paths': {'home': 'output'}, # temp and main files in one folder
-        'format': 'ba[ext=m4a]', # bestaudio.m4a
+        'outtmpl': '%(title)s.%(ext)s',
+        'paths': {'home': 'output'},
+        'format': 'ba[ext=m4a]',
         'retries': 4,
-        'quiet': True, # without logs
-        'progress': True, # show progress bar
+        'quiet': False,
+        'progress_hooks': [hook],
         'skip_unavailable_fragments': True,
-	    'noincludeunavailablevideos': True,
-	    'ignoreerrors': True,
-	    'no_warnings': True,
-	    'playliststart': skip,
+        'no_warnings': True,
+        'ignoreerrors': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'playliststart': skip,
+        'cookiefile': cookies,
+        'download_archive': 'archive.txt',
     }
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(url)
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
     except Exception as e:
-        print(e)
+        with open('error.txt', 'a', encoding="utf-8") as e_f:
+            e_f.write("-----------------------------------------\n")
+            e_f.write(f"URL текущей песни: {current_url}\n")
+            e_f.write(f"Ошибка: {e}\n")
 
 
 if __name__ == '__main__':
@@ -29,4 +46,6 @@ if __name__ == '__main__':
     skip = input('skip (pass for 0): ')
     skip = skip if skip != '' else 3
 
-    download()
+    cookies_path = 'cookies.txt'
+
+    download(url, skip, cookies_path)
